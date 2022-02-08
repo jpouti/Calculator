@@ -1,0 +1,128 @@
+html {
+    box-sizing: border-box;
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+/* ---header, containers and grid styling--- */
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vh;
+    width: 100vh;
+    font-weight: bold;
+    font-size: 24px;
+    background-color: gainsboro;
+}
+
+.calculator-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 80vh;
+    width: 100vh;
+    border-style: solid;
+    border-color: navy;
+    background-color: ghostwhite;
+}
+
+.display-container {
+    height: 100px;
+    width: 50vh;
+    border-style: solid;
+    border-color: navy;
+    background-color: black;
+    color: whitesmoke;
+
+}
+
+.operations-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 50vh;
+    height: auto;
+    gap: 5px;
+    padding: 25px;
+    border-style: solid;
+    border-color: navy;
+    background-color: whitesmoke;
+}
+
+.footer {
+    height: 10vh;
+    width: 100vh;
+    background-color: gainsboro;
+}
+
+/* ---styling and positioning buttons inside the grid--- */
+button {
+    height: 50px;
+    border-radius: 12px;
+    background:darkgrey;
+    color: white;
+    border-color: navy;
+    font-size: 20px;
+}
+
+button:hover {
+    background-color: grey;
+}
+
+.operator {
+    grid-column-start: 4;
+    background-color: blue;
+}
+
+.operator:hover {
+    background-color: darkblue;
+}
+
+.number-row1 {
+    grid-row: 2;
+}
+
+.number-row2 {
+    grid-row: 3;
+}
+
+.number-row3 {
+    grid-row: 4;
+}
+
+.zero {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+.clear {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    background-color: red;
+}
+
+.clear:hover {
+    background-color: darkred;
+}
+
+.equal {
+    background-color: green;
+}
+
+.equal:hover {
+    background-color: darkgreen;
+}
+
+.backspace {
+    grid-row: 1;
+    background-color: red;
+}
+
+.backspace:hover {
+    background-color: darkred;
+}
+
