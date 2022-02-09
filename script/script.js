@@ -4,6 +4,7 @@ let calculator = {
     secondNumInput: false,
     operator: null,
     lastEqual: false,
+    decimal: false,
 };
 
 function add(firstNum, secondNum) {
@@ -20,8 +21,8 @@ function multiply(firstNum, secondNum) {
 
 function divide(firstNum, secondNum) {
     if (secondNum === 0) {
-        // dividing by 0 is undefined
-        return NaN;
+        const display = document.querySelector('.value');
+        display.textContent = "Mission impossible"
     } else {
         return (firstNum / secondNum);
     }
@@ -58,13 +59,15 @@ operations.addEventListener('click', (event) => {
         if (calculator.operator != null) {
             console.log(calculator.displayValue);
             calculator.displayValue = operate(
-                parseInt(calculator.firstNum), parseInt(calculator.displayValue), calculator.operator);
+                parseFloat(calculator.firstNum), parseFloat(calculator.displayValue), calculator.operator);
+            calculator.displayValue = calculator.displayValue.toPrecision(4).toString();
             valueDisplay();
-            calculator.displayValue = calculator.displayValue.toString();
+//            calculator.displayValue = calculator.displayValue.toString();
             calculator.firstNum = calculator.displayValue;
             calculator.displayValue = '0';
             calculator.operator = null;
             calculator.lastEqual = true;
+            calculator.decimal = false;
             return;   
         } else {
             calculator.firstNum = calculator.displayValue;
@@ -94,7 +97,13 @@ operations.addEventListener('click', (event) => {
 // !! decimal function to be created
     if (target.classList.contains('decimal')) {
         console.log(target.value, 'decimal');
-        return;
+        if (calculator.decimal === true) {
+            return;
+        } else {
+            valueInput(target.value);
+            calculator.decimal = true;
+            return;
+        }
     }
 
     valueInput(target.value); 
@@ -103,14 +112,13 @@ operations.addEventListener('click', (event) => {
 //if directly input new value after operation, clears the calculator object to start a new calculation
 //inputs value to calculator and calls a function to display the value
 function valueInput(input) {
-    console.log(calculator.lastEqual);
-    console.log(calculator.operator);
     if (calculator.lastEqual === true && calculator.operator === null) {
         calculator.displayValue = input;
         calculator.firstNum = null;
         calculator.secondNumInput = false;
         calculator.operator = null;
         calculator.lastEqual = false;
+        calculator.decimal = false;
         valueDisplay();
     } else {
         const { displayValue } = calculator;
@@ -122,10 +130,10 @@ function valueInput(input) {
 // displays the value on the display, displays maximum 13 digits
 function valueDisplay() {
     const display = document.querySelector('.value');
-    if (calculator.displayValue > '9999999999999') {
-        display.textContent = '9999999999999';
+    if (calculator.displayValue > '99999999999') {
+        display.textContent = '99999999999';
     } else {
-        display.textContent = calculator.displayValue;
+        display.textContent = parseFloat(calculator.displayValue);
     }
 }
 
@@ -137,19 +145,24 @@ function operator(value) {
         calculator.firstNum = calculator.displayValue;
         calculator.displayValue = '0';
         calculator.secondNumInput = true;
+        calculator.decimal = false;
         // makes the operator work after the first calculation, storing the values correctly
     } else if (calculator.secondNumInput === true && calculator.displayValue === '0') {
         calculator.displayValue = calculator.firstNum;
         valueDisplay();
         calculator.displayValue = '0';
         calculator.operator = value;
+        calculator.decimal = false;
     } else {
         calculator.displayValue = operate(
-            parseInt(calculator.firstNum), parseInt(calculator.displayValue), calculator.operator);
+            parseFloat(calculator.firstNum), parseFloat(calculator.displayValue), calculator.operator);
+        calculator.displayValue = calculator.displayValue.toPrecision(4).toString();
+//        calculator.displayValue = calculator.displayValue.toString();    
         valueDisplay();
         calculator.firstNum = calculator.displayValue;
         calculator.displayValue = '0';
         calculator.operator = value;
+        calculator.decimal = false;
     }
 }
 
