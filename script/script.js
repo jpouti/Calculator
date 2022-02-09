@@ -3,6 +3,7 @@ let calculator = {
     firstNum: null,
     secondNumInput: false,
     operator: null,
+    lastEqual: false,
 };
 
 function add(firstNum, secondNum) {
@@ -52,11 +53,25 @@ operations.addEventListener('click', (event) => {
         return;
     }
 
+    // display calculated value and reset displayValue and operator from the object
     if (target.classList.contains('equal')) {
-        calculator.displayValue = operate(
-            parseInt(calculator.firstNum), parseInt(calculator.displayValue), calculator.operator);
-        valueDisplay();
-        return;
+        if (calculator.operator != null) {
+            console.log(calculator.displayValue);
+            calculator.displayValue = operate(
+                parseInt(calculator.firstNum), parseInt(calculator.displayValue), calculator.operator);
+            valueDisplay();
+            calculator.displayValue = calculator.displayValue.toString();
+            calculator.firstNum = calculator.displayValue;
+            calculator.displayValue = '0';
+            calculator.operator = null;
+            calculator.lastEqual = true;
+            return;   
+        } else {
+            calculator.firstNum = calculator.displayValue;
+            calculator.secondNumInput = false;
+            calculator.displayValue = '0';
+            return;
+        }
     }
 
     //clears the calculator object
@@ -81,30 +96,53 @@ operations.addEventListener('click', (event) => {
         console.log(target.value, 'decimal');
         return;
     }
-    valueInput(target.value);
+
+    valueInput(target.value); 
 
 })
-
+//if directly input new value after operation, clears the calculator object to start a new calculation
 //inputs value to calculator and calls a function to display the value
 function valueInput(input) {
-    const { displayValue } = calculator;
-    calculator.displayValue = displayValue === '0' ? input : displayValue + input;
-    valueDisplay();
+    console.log(calculator.lastEqual);
+    console.log(calculator.operator);
+    if (calculator.lastEqual === true && calculator.operator === null) {
+        calculator.displayValue = input;
+        calculator.firstNum = null;
+        calculator.secondNumInput = false;
+        calculator.operator = null;
+        calculator.lastEqual = false;
+        valueDisplay();
+    } else {
+        const { displayValue } = calculator;
+        calculator.displayValue = displayValue === '0' ? input : displayValue + input;
+        valueDisplay();
+    }
 }
 
-// displays the value on the display
+// displays the value on the display, displays maximum 13 digits
 function valueDisplay() {
     const display = document.querySelector('.value');
-    display.textContent = calculator.displayValue;
+    if (calculator.displayValue > '9999999999999') {
+        display.textContent = '9999999999999';
+    } else {
+        display.textContent = calculator.displayValue;
+    }
 }
 
 // if two numbers have been input, calls operate function for calculation
 function operator(value) {
+    console.log('operator')
     if (calculator.secondNumInput === false) {
         calculator.operator = value;
         calculator.firstNum = calculator.displayValue;
         calculator.displayValue = '0';
         calculator.secondNumInput = true;
+        // makes the operator work after the first calculation, storing the values correctly
+    } else if (calculator.secondNumInput === true && calculator.displayValue === '0') {
+        calculator.displayValue = calculator.firstNum;
+        valueDisplay();
+        calculator.displayValue = '0';
+        calculator.operator = value;
     } else {
         calculator.displayValue = operate(
             parseInt(calculator.firstNum), parseInt(calculator.displayValue), calculator.operator);
@@ -115,7 +153,7 @@ function operator(value) {
     }
 }
 
-//deletes the last input value
+// deletes the last input value
 function backspace() {
     const display = document.querySelector('.value');
     calculator.displayValue = calculator.displayValue.substring(
