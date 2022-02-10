@@ -33,82 +33,103 @@ function operate(firstNum, secondNum, operator) {
         return add(firstNum, secondNum);
     } else if (operator === "-") {
         return subtract(firstNum, secondNum);
-    } else if (operator === "÷") {
+    } else if (operator === "/") {
         return divide(firstNum, secondNum);
-    } else if (operator === "×") {
+    } else if (operator === "*") {
         return multiply(firstNum, secondNum);
     }
 }
 
 const operations = document.querySelector('.operations-grid');
 operations.addEventListener('click', (event) => {
-    const { target } = event;
+        const { target } = event;
+        const { value } = target;
 
-    //if clicked element is not a button, exits
-    if (!target.matches('button')) {
+            //if clicked element is not a button, exits
+            if (!target.matches('button')) {
+                return;
+            }
+
+            switch (value) {
+                case '+':
+                case '-':
+                case '*':
+                case '/':
+                    operator(value);
+                    break;
+                case '=':
+                    equals();
+                    break;
+                case 'clear':
+                    calculator = {
+                        displayValue: "0",
+                        firstNum: null,
+                        secondNumInput: false,
+                        operator: null,
+                    }
+                    valueDisplay();
+                    break;
+                case '⌫':
+                    backspace();
+                    break;
+                case '.':
+                    if (calculator.decimal === true) {
+                        break;
+                    } else {
+                        valueInput(value);
+                        calculator.decimal = true;
+                        break;
+                    }
+                default:
+                    valueInput(value);
+            }
+        });
+
+// keyboard support for the calculator
+window.addEventListener('keydown', (event) => {
+    const value = event.key;
+    const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    const allowedKeys = ['+', '-', '*', '/', '.', '=', 'Enter', 'Delete', 'Backspace'].concat(numbers);
+    if (allowedKeys.includes(value) === false) {
         return;
-    }
-
-    if (target.classList.contains('operator')) {
-        operator(target.value);
-        return;
-    }
-
-    // display calculated value and reset displayValue and operator from the object
-    if (target.classList.contains('equal')) {
-        if (calculator.operator != null) {
-            console.log(calculator.displayValue);
-            calculator.displayValue = operate(
-                parseFloat(calculator.firstNum), parseFloat(calculator.displayValue), calculator.operator);
-            calculator.displayValue = calculator.displayValue.toPrecision(4).toString();
-            valueDisplay();
-//            calculator.displayValue = calculator.displayValue.toString();
-            calculator.firstNum = calculator.displayValue;
-            calculator.displayValue = '0';
-            calculator.operator = null;
-            calculator.lastEqual = true;
-            calculator.decimal = false;
-            return;   
-        } else {
-            calculator.firstNum = calculator.displayValue;
-            calculator.secondNumInput = false;
-            calculator.displayValue = '0';
-            return;
+    } else {
+        switch (value) {
+            case '+':
+            case '-':
+            case '*':
+            case '/':
+                operator(value);
+                break;
+            case '=':
+            case 'Enter':
+                equals();
+                break;
+            case 'Delete':
+                calculator = {
+                    displayValue: "0",
+                    firstNum: null,
+                    secondNumInput: false,
+                    operator: null,
+                }
+                valueDisplay();
+                break;
+            case 'Backspace':
+                backspace();
+                break;
+            case '.':
+                if (calculator.decimal === true) {
+                    break;
+                } else {
+                    valueInput(value);
+                    calculator.decimal = true;
+                    break;
+                }
+            default:
+                valueInput(value);
         }
     }
+});
 
-    //clears the calculator object
-    if (target.classList.contains('clear')) {
-        calculator = {
-            displayValue: "0",
-            firstNum: null,
-            secondNumInput: false,
-            operator: null,
-        }
-        valueDisplay();
-        return;
-    }
-
-    if (target.classList.contains('backspace')) {
-        backspace();
-        return;
-    }
-
-// !! decimal function to be created
-    if (target.classList.contains('decimal')) {
-        console.log(target.value, 'decimal');
-        if (calculator.decimal === true) {
-            return;
-        } else {
-            valueInput(target.value);
-            calculator.decimal = true;
-            return;
-        }
-    }
-
-    valueInput(target.value); 
-
-})
 //if directly input new value after operation, clears the calculator object to start a new calculation
 //inputs value to calculator and calls a function to display the value
 function valueInput(input) {
@@ -139,14 +160,13 @@ function valueDisplay() {
 
 // if two numbers have been input, calls operate function for calculation
 function operator(value) {
-    console.log('operator')
     if (calculator.secondNumInput === false) {
         calculator.operator = value;
         calculator.firstNum = calculator.displayValue;
         calculator.displayValue = '0';
         calculator.secondNumInput = true;
         calculator.decimal = false;
-        // makes the operator work after the first calculation, storing the values correctly
+        // if operator pressed after equals
     } else if (calculator.secondNumInput === true && calculator.displayValue === '0') {
         calculator.displayValue = calculator.firstNum;
         valueDisplay();
@@ -156,13 +176,28 @@ function operator(value) {
     } else {
         calculator.displayValue = operate(
             parseFloat(calculator.firstNum), parseFloat(calculator.displayValue), calculator.operator);
-        calculator.displayValue = calculator.displayValue.toPrecision(4).toString();
-//        calculator.displayValue = calculator.displayValue.toString();    
+        calculator.displayValue = calculator.displayValue.toPrecision(4).toString();   
         valueDisplay();
         calculator.firstNum = calculator.displayValue;
         calculator.displayValue = '0';
         calculator.operator = value;
         calculator.decimal = false;
+    }
+}
+
+//calculates the operation if both of the numbers have been input
+function equals() {
+    if (calculator.operator != null) {
+        calculator.displayValue = operate(
+            parseFloat(calculator.firstNum), parseFloat(calculator.displayValue), calculator.operator);
+        calculator.displayValue = calculator.displayValue.toPrecision(4).toString();
+        valueDisplay();
+        calculator.firstNum = calculator.displayValue;
+        calculator.displayValue = '0';
+        calculator.operator = null;
+        calculator.lastEqual = true;
+        calculator.decimal = false;
+        return;
     }
 }
 
@@ -172,7 +207,6 @@ function backspace() {
     calculator.displayValue = calculator.displayValue.substring(
         0, calculator.displayValue.length - 1);
     display.textContent = calculator.displayValue;
-    console.log(calculator.displayValue);
     valueDisplay();
 }
 
