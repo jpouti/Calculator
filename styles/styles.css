@@ -7,6 +7,13 @@ html {
     padding: 0;
     box-sizing: inherit;
 }
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: navy;
+}
 /* ---header, containers and grid styling--- */
 .header {
     display: flex;
@@ -17,6 +24,7 @@ html {
     font-weight: bold;
     font-size: 24px;
     background-color: gainsboro;
+    color: navy;
 }
 
 .calculator-container {
@@ -45,7 +53,7 @@ html {
 
 .value {
     color: whitesmoke;
-    font-size: 50px;
+    font-size: 64px;
     padding: 25px;
 }
 
@@ -56,7 +64,7 @@ html {
     width: 50vh;
     height: auto;
     gap: 5px;
-    padding: 25px;
+    padding: 20px;
     border-style: solid;
     border-color: navy;
     background-color: whitesmoke;
@@ -70,16 +78,18 @@ html {
 
 /* ---styling and positioning buttons inside the grid--- */
 button {
-    height: 50px;
+    height: 65px;
     border-radius: 12px;
-    background:darkgrey;
+    background:grey;
     color: white;
     border-color: navy;
+    border-style: solid;
     font-size: 20px;
+    font-weight: bold;
 }
 
 button:hover {
-    background-color: grey;
+    background-color: darkslategrey;
 }
 
 .operator {
