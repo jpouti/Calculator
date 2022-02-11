@@ -22,7 +22,7 @@ function multiply(firstNum, secondNum) {
 function divide(firstNum, secondNum) {
     if (secondNum === 0) {
         const display = document.querySelector('.value');
-        display.textContent = "Mission impossible"
+        display.textContent = "Impossible"
     } else {
         return (firstNum / secondNum);
     }
@@ -61,13 +61,7 @@ operations.addEventListener('click', (event) => {
                     equals();
                     break;
                 case 'clear':
-                    calculator = {
-                        displayValue: "0",
-                        firstNum: null,
-                        secondNumInput: false,
-                        operator: null,
-                    }
-                    valueDisplay();
+                    clear();
                     break;
                 case '⌫':
                     backspace();
@@ -105,13 +99,7 @@ window.addEventListener('keydown', (event) => {
                 equals();
                 break;
             case 'Delete':
-                calculator = {
-                    displayValue: "0",
-                    firstNum: null,
-                    secondNumInput: false,
-                    operator: null,
-                }
-                valueDisplay();
+                clear();
                 break;
             case 'Backspace':
                 backspace();
@@ -131,7 +119,6 @@ window.addEventListener('keydown', (event) => {
 });
 
 //if directly input new value after operation, clears the calculator object to start a new calculation
-//inputs value to calculator and calls a function to display the value
 function valueInput(input) {
     if (calculator.lastEqual === true && calculator.operator === null) {
         calculator.displayValue = input;
@@ -151,8 +138,8 @@ function valueInput(input) {
 // displays the value on the display, displays maximum 13 digits
 function valueDisplay() {
     const display = document.querySelector('.value');
-    if (calculator.displayValue > '99999999999') {
-        display.textContent = '99999999999';
+    if (parseFloat(calculator.displayValue) > 9999999999) {
+        display.textContent = 'big number';
     } else {
         display.textContent = parseFloat(calculator.displayValue);
     }
@@ -207,6 +194,18 @@ function backspace() {
     calculator.displayValue = calculator.displayValue.substring(
         0, calculator.displayValue.length - 1);
     display.textContent = calculator.displayValue;
+    valueDisplay();
+}
+
+function clear() {
+    calculator = {
+        displayValue: "0",
+        firstNum: null,
+        secondNumInput: false,
+        operator: null,
+        lastEqual: false,
+        decimal: false,
+    }
     valueDisplay();
 }
 
